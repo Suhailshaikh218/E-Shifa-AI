@@ -161,7 +161,7 @@ curl -X POST http://localhost:8000/api/bookings/create \
 
 ## 🔑 API KEYS CONFIGURED
 
-✅ **Google Gemini API**: `AIzaSyDHO1_iDt2wZF2a_FhR1t7Pbc-aOl6AQ9k`
+✅ **Google Gemini API**: `AIzaSy**********************` (configured)
 ✅ **Neon PostgreSQL**: Connected and working
 ✅ **JWT Secret**: Configured
 

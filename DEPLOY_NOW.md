@@ -34,7 +34,7 @@ gcloud run deploy eshifa-backend \
   --region us-central1 \
   --allow-unauthenticated \
   --set-env-vars DATABASE_URL="postgresql://neondb_owner:npg_xxxxxxxxx@ep-xxxxxxxxx.us-east-2.aws.neon.tech/neondb?sslmode=require" \
-  --set-env-vars GEMINI_API_KEY="AIzaSyDHO1_iDt2wZF2a_FhR1t7Pbc-aOl6AQ9k" \
+  --set-env-vars GEMINI_API_KEY="YOUR_GEMINI_API_KEY" \
   --set-env-vars SECRET_KEY="your-secret-key-here-change-in-production" \
   --set-env-vars ALGORITHM="HS256" \
   --set-env-vars ACCESS_TOKEN_EXPIRE_MINUTES="10080"
@@ -53,7 +53,7 @@ gcloud run deploy eshifa-frontend \
   --region us-central1 \
   --allow-unauthenticated \
   --set-env-vars NEXT_PUBLIC_API_URL="https://eshifa-backend-xxxxxxxxx-uc.a.run.app" \
-  --set-env-vars NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="AIzaSyDHO1_iDt2wZF2a_FhR1t7Pbc-aOl6AQ9k"
+  --set-env-vars NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="YOUR_GOOGLE_MAPS_API_KEY"
 ```
 
 **Note**: Replace NEXT_PUBLIC_API_URL with the backend URL from Step 3
