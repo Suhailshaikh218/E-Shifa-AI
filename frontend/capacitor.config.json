@@ -1,0 +1,21 @@
+{
+  "appId": "ai.eshifa.app",
+  "appName": "E-Shifa AI",
+  "webDir": "out",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": "release.keystore",
+      "keystoreAlias": "eshifa"
+    }
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#1e40af",
+      "showSpinner": false
+    }
+  }
+}
