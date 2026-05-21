@@ -1,0 +1,199 @@
+{
+  "session_id": "demo-session-2026-05-21",
+  "project": "E-Shifa AI",
+  "challenge": "Challenge 2 - AI Service Orchestrator for Informal Economy",
+  "user_query": "Mujhe kal morning nurse chahiye injection ke liye",
+  "total_execution_time_ms": 1857,
+  "agents_executed": 6,
+  "booking_number": "ESH-A1B2C3D4",
+
+  "agent_traces": [
+    {
+      "agent_name": "intent_extraction",
+      "sequence": 1,
+      "input": {
+        "user_query": "Mujhe kal morning nurse chahiye injection ke liye",
+        "location": { "lat": 24.8607, "lng": 67.0011, "address": "Karachi, Pakistan" }
+      },
+      "reasoning_steps": [
+        "Language detected: Roman Urdu (confidence: 0.97)",
+        "Service identified: home_nurse (keyword: 'nurse')",
+        "Time extracted: tomorrow morning → 2026-05-22T10:00:00",
+        "Urgency assessed: routine (injection = non-emergency)",
+        "Confidence score: 0.94"
+      ],
+      "output": {
+        "service_type": "home_nurse",
+        "preferred_time": "2026-05-22T10:00:00",
+        "urgency": "routine",
+        "language": "roman_urdu",
+        "confidence": 0.94
+      },
+      "tool_calls": ["gemini_pro_tool"],
+      "execution_time_ms": 1243
+    },
+    {
+      "agent_name": "provider_matching",
+      "sequence": 2,
+      "input": {
+        "service_type": "home_nurse",
+        "location": { "lat": 24.8607, "lng": 67.0011 },
+        "urgency": "routine",
+        "providers_found": 3
+      },
+      "reasoning_steps": [
+        "Found 3 available providers for home_nurse",
+        "Ranked by 10-factor weighted algorithm",
+        "Provider A: distance=1.2km(30%), rating=4.8(15%), availability=true(20%) → score=0.87",
+        "Provider B: distance=2.1km(30%), rating=4.6(15%), availability=true(20%) → score=0.79",
+        "Provider C: distance=3.4km(30%), rating=4.9(15%), availability=true(20%) → score=0.74",
+        "Selected Provider A: highest composite score",
+        "Decision reason: closest + highest reliability + zero cancellations"
+      ],
+      "output": {
+        "matched_providers": [
+          {
+            "provider_id": "uuid-provider-a",
+            "name": "Nurse Fatima",
+            "distance_km": 1.2,
+            "rating": 4.8,
+            "match_score": 0.87,
+            "eta_minutes": 12,
+            "base_rate": 1500
+          },
+          {
+            "provider_id": "uuid-provider-b",
+            "name": "Nurse Sara",
+            "distance_km": 2.1,
+            "rating": 4.6,
+            "match_score": 0.79,
+            "eta_minutes": 21,
+            "base_rate": 1400
+          },
+          {
+            "provider_id": "uuid-provider-c",
+            "name": "Nurse Ayesha",
+            "distance_km": 3.4,
+            "rating": 4.9,
+            "match_score": 0.74,
+            "eta_minutes": 34,
+            "base_rate": 1600
+          }
+        ]
+      },
+      "tool_calls": ["haversine_distance_tool", "availability_check_tool"],
+      "execution_time_ms": 89
+    },
+    {
+      "agent_name": "pricing",
+      "sequence": 3,
+      "input": {
+        "base_rate": 1500,
+        "distance_km": 1.2,
+        "urgency": "routine",
+        "demand_level": "medium",
+        "loyalty_tier": "bronze"
+      },
+      "reasoning_steps": [
+        "Base rate: PKR 1,500",
+        "Distance fee: 1.2km × PKR 10 = PKR 12",
+        "Urgency: routine → 0% surcharge = PKR 0",
+        "Demand: medium → 10% surge = PKR 150",
+        "Loyalty: bronze → 0% discount = PKR 0",
+        "Final price: PKR 1,500 + 12 + 0 + 150 - 0 = PKR 1,662"
+      ],
+      "output": {
+        "base_fee": 1500,
+        "distance_fee": 12.0,
+        "urgency_surcharge": 0.0,
+        "demand_surge": 150.0,
+        "loyalty_discount": 0.0,
+        "final_price": 1662.0
+      },
+      "tool_calls": ["pricing_calculator_tool"],
+      "execution_time_ms": 12
+    },
+    {
+      "agent_name": "scheduling",
+      "sequence": 4,
+      "input": {
+        "provider_id": "uuid-provider-a",
+        "preferred_time": "2026-05-22T10:00:00",
+        "duration_minutes": 60
+      },
+      "reasoning_steps": [
+        "Checked provider calendar for 2026-05-22",
+        "No conflicts found at 10:00 AM slot",
+        "Reserved 60-minute block: 10:00 AM - 11:00 AM",
+        "Added 30-minute travel buffer before slot",
+        "Booking status: confirmed"
+      ],
+      "output": {
+        "scheduled_time": "2026-05-22T10:00:00",
+        "end_time": "2026-05-22T11:00:00",
+        "status": "confirmed",
+        "conflicts": []
+      },
+      "tool_calls": ["calendar_scheduler_tool"],
+      "execution_time_ms": 34
+    },
+    {
+      "agent_name": "notification",
+      "sequence": 5,
+      "input": {
+        "event_type": "booking_confirmed",
+        "customer_phone": "+923001234567",
+        "booking_number": "ESH-A1B2C3D4"
+      },
+      "reasoning_steps": [
+        "Event: booking_confirmed",
+        "WhatsApp notification sent to +923001234567",
+        "Multi-channel notification strategy applied",
+        "Total channels: 3 (WhatsApp + SMS + In-app)"
+      ],
+      "output": {
+        "notifications_sent": [
+          { "channel": "whatsapp", "status": "simulated", "message": "🏥 E-Shifa AI - Booking Confirmed\n\nHello Ahmed Khan!\n✅ Your Home Nurse booking has been confirmed.\n• Provider: Nurse Fatima\n• Time: 2026-05-22 10:00 AM\n• Booking #: ESH-A1B2C3D4\n• Amount: PKR 1,662" },
+          { "channel": "sms", "status": "simulated" },
+          { "channel": "in_app", "status": "delivered" }
+        ]
+      },
+      "tool_calls": ["whatsapp_notification_tool"],
+      "execution_time_ms": 456
+    },
+    {
+      "agent_name": "feedback",
+      "sequence": 6,
+      "input": {
+        "rating": 5,
+        "comment": "Nurse Fatima was very professional and caring. Highly recommend!"
+      },
+      "reasoning_steps": [
+        "Rating: 5/5 (excellent)",
+        "Positive keywords found: 'professional', 'caring' (2 matches)",
+        "Negative keywords found: 0",
+        "Sentiment score: 0.90 (very_positive)",
+        "No dispute detected (score > -0.5)",
+        "Provider reputation updated: new avg rating calculated"
+      ],
+      "output": {
+        "sentiment_score": 0.90,
+        "sentiment_label": "very_positive",
+        "dispute_detected": false
+      },
+      "tool_calls": ["sentiment_analysis_tool", "reputation_update_tool"],
+      "execution_time_ms": 23
+    }
+  ],
+
+  "final_state": {
+    "booking_id": "a421f5ea-905a-4378-957e-c4885398b701",
+    "booking_number": "ESH-A1B2C3D4",
+    "status": "confirmed",
+    "provider_assigned": "Nurse Fatima",
+    "scheduled_time": "2026-05-22T10:00:00",
+    "final_price": 1662.0,
+    "whatsapp_sent": true,
+    "traces_saved": 6
+  }
+}
