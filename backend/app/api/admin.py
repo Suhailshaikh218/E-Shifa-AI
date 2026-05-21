@@ -101,14 +101,14 @@ async def get_live_bookings(current_user: dict = Depends(get_current_user)):
         b.scheduled_time,
         b.final_price,
         b.created_at,
-        u.full_name as customer_name,
-        u.phone_number as customer_phone,
-        p_user.full_name as provider_name,
+        ua_cust.full_name as customer_name,
+        ua_cust.phone_number as customer_phone,
+        ua_prov.full_name as provider_name,
         p.rating as provider_rating
     FROM bookings b
-    JOIN users u ON b.customer_id = u.id
+    JOIN users_auth ua_cust ON b.customer_id = ua_cust.id
     LEFT JOIN providers p ON b.provider_id = p.id
-    LEFT JOIN users p_user ON p.user_id = p_user.id
+    LEFT JOIN users_auth ua_prov ON p.user_id = ua_prov.id
     WHERE b.status IN ('confirmed', 'en_route', 'in_progress')
     ORDER BY b.scheduled_time ASC
     """
@@ -125,7 +125,7 @@ async def get_provider_performance(current_user: dict = Depends(get_current_user
     query = """
     SELECT 
         p.id,
-        u.full_name as name,
+        ua.full_name as name,
         p.service_type,
         p.rating,
         p.total_bookings,
@@ -134,9 +134,9 @@ async def get_provider_performance(current_user: dict = Depends(get_current_user
         COUNT(r.id) as total_reviews,
         AVG(r.sentiment_score) as avg_sentiment
     FROM providers p
-    JOIN users u ON p.user_id = u.id
+    JOIN users_auth ua ON p.user_id = ua.id
     LEFT JOIN reviews r ON p.id = r.provider_id
-    GROUP BY p.id, u.full_name, p.service_type, p.rating, p.total_bookings, p.cancellation_rate, p.is_available
+    GROUP BY p.id, ua.full_name, p.service_type, p.rating, p.total_bookings, p.cancellation_rate, p.is_available
     ORDER BY p.rating DESC
     """
     

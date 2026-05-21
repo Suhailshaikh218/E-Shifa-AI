@@ -52,7 +52,7 @@ async def create_booking(request: BookingRequest, current_user: dict = Depends(g
         
         # Get user loyalty tier
         user_query = """
-        SELECT loyalty_tier FROM users WHERE id = :user_id
+        SELECT u.loyalty_tier FROM users u WHERE u.id = :user_id
         """
         user_data = await database.fetch_one(user_query, {"user_id": current_user["user_id"]})
         loyalty_tier = user_data['loyalty_tier'] if user_data else 'bronze'
@@ -82,11 +82,11 @@ async def create_booking(request: BookingRequest, current_user: dict = Depends(g
         # ============================================
         # Fetch available providers
         providers_query = """
-        SELECT p.id, u.full_name as name, p.latitude, p.longitude, p.base_rate, 
+        SELECT p.id, ua.full_name as name, p.latitude, p.longitude, p.base_rate, 
                p.rating, p.total_bookings, p.cancellation_rate, p.is_available,
                p.specialization, p.response_time_avg_minutes
         FROM providers p
-        JOIN users u ON p.user_id = u.id
+        JOIN users_auth ua ON p.user_id = ua.id
         WHERE p.service_type = :service_type AND p.is_available = true
         """
         providers = await database.fetch_all(
@@ -259,10 +259,10 @@ async def create_booking(request: BookingRequest, current_user: dict = Depends(g
 async def get_booking(booking_id: str, current_user: dict = Depends(get_current_user)):
     """Get booking details with AI traces"""
     query = """
-    SELECT b.*, u.full_name as provider_name, u.phone_number as provider_phone
+    SELECT b.*, ua.full_name as provider_name, ua.phone_number as provider_phone
     FROM bookings b
     LEFT JOIN providers p ON b.provider_id = p.id
-    LEFT JOIN users u ON p.user_id = u.id
+    LEFT JOIN users_auth ua ON p.user_id = ua.id
     WHERE b.id = :booking_id
     """
     
@@ -294,10 +294,10 @@ async def get_booking(booking_id: str, current_user: dict = Depends(get_current_
 async def get_user_bookings(current_user: dict = Depends(get_current_user)):
     """Get all bookings for current user"""
     query = """
-    SELECT b.*, u.full_name as provider_name
+    SELECT b.*, ua.full_name as provider_name
     FROM bookings b
     LEFT JOIN providers p ON b.provider_id = p.id
-    LEFT JOIN users u ON p.user_id = u.id
+    LEFT JOIN users_auth ua ON p.user_id = ua.id
     WHERE b.customer_id = :user_id
     ORDER BY b.created_at DESC
     """
