@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Shifa AI - Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg p-8 mb-8">
+            <h1 class="text-4xl font-bold mb-2">🏥 E-Shifa AI</h1>
+            <p class="text-xl">AI-Powered Home Healthcare Service Orchestrator</p>
+            <p class="text-sm mt-2 opacity-90">Multilingual | Smart Matching | Transparent Pricing</p>
+        </div>
+
+        <!-- API Status -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4">🔌 Backend Status</h2>
+            <div id="status" class="text-gray-600">Checking...</div>
+            <button onclick="checkHealth()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Refresh Status
+            </button>
+        </div>
+
+        <!-- Demo Section -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4">🎬 Quick Demo</h2>
+            
+            <!-- User Query Input -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Enter your request (Urdu/English):</label>
+                <input 
+                    type="text" 
+                    id="userQuery" 
+                    value="Mujhe kal morning nurse chahiye injection ke liye"
+                    class="w-full border rounded px-4 py-2"
+                    placeholder="e.g., Mujhe kal morning nurse chahiye"
+                >
+            </div>
+
+            <!-- Location -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Location:</label>
+                <input 
+                    type="text" 
+                    id="location" 
+                    value="Karachi, Pakistan"
+                    class="w-full border rounded px-4 py-2"
+                    readonly
+                >
+            </div>
+
+            <!-- Auth Token -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Auth Token (get from signup):</label>
+                <input 
+                    type="text" 
+                    id="authToken" 
+                    class="w-full border rounded px-4 py-2"
+                    placeholder="Paste your JWT token here"
+                >
+                <button onclick="signup()" class="mt-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                    Sign Up & Get Token
+                </button>
+            </div>
+
+            <!-- Create Booking Button -->
+            <button onclick="createBooking()" class="w-full bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 font-bold text-lg">
+                🚀 Create Booking (AI Orchestration)
+            </button>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="hidden bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-bold mb-4">📊 Results</h2>
+            <pre id="resultContent" class="bg-gray-100 p-4 rounded overflow-auto max-h-96 text-sm"></pre>
+        </div>
+
+        <!-- Features -->
+        <div class="grid md:grid-cols-2 gap-6 mt-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-bold mb-3">🤖 AI Agents</h3>
+                <ul class="space-y-2 text-sm">
+                    <li>✅ Intent Extraction</li>
+                    <li>✅ Provider Matching (10 factors)</li>
+                    <li>✅ Dynamic Pricing</li>
+                    <li>✅ Scheduling</li>
+                    <li>✅ Notifications</li>
+                    <li>✅ Feedback & Sentiment</li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-bold mb-3">🏥 Services</h3>
+                <ul class="space-y-2 text-sm">
+                    <li>💉 Home Nurse</li>
+                    <li>👨‍⚕️ Doctor Visit</li>
+                    <li>👵 Caregiver</li>
+                    <li>🏃 Physiotherapist</li>
+                    <li>🧪 Lab Collection</li>
+                    <li>🚑 Ambulance</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Links -->
+        <div class="mt-8 bg-blue-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold mb-3">📚 Resources</h3>
+            <div class="space-y-2">
+                <a href="http://localhost:8000/docs" target="_blank" class="block text-blue-600 hover:underline">
+                    📖 Interactive API Documentation
+                </a>
+                <a href="http://localhost:8000/health" target="_blank" class="block text-blue-600 hover:underline">
+                    ✅ Health Check Endpoint
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+
+        async function checkHealth() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = '⏳ Checking...';
+            
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                
+                statusDiv.innerHTML = `
+                    <div class="text-green-600 font-bold">✅ Backend is running!</div>
+                    <div class="mt-2 text-sm">
+                        <div>App: ${data.app}</div>
+                        <div>Version: ${data.version}</div>
+                        <div>Database: ${data.database}</div>
+                        <div>AI Engine: ${data.ai_engine}</div>
+                    </div>
+                `;
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="text-red-600 font-bold">❌ Backend not reachable</div>
+                    <div class="mt-2 text-sm">Make sure backend is running: <code>cd backend && python main.py</code></div>
+                `;
+            }
+        }
+
+        async function signup() {
+            const timestamp = Date.now();
+            const payload = {
+                full_name: "Demo User",
+                phone_number: `+9230${timestamp.toString().slice(-8)}`,
+                email: `demo${timestamp}@example.com`,
+                password: "password123",
+                role: "customer"
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('authToken').value = data.access_token;
+                    alert('✅ Signed up successfully! Token added.');
+                } else {
+                    alert('❌ Signup failed: ' + JSON.stringify(data));
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function createBooking() {
+            const token = document.getElementById('authToken').value;
+            const query = document.getElementById('userQuery').value;
+            
+            if (!token) {
+                alert('Please sign up first to get an auth token!');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            const resultContent = document.getElementById('resultContent');
+            
+            resultsDiv.classList.remove('hidden');
+            resultContent.textContent = '⏳ Processing with AI agents...\n\nThis may take 10-15 seconds...';
+
+            const payload = {
+                user_query: query,
+                location: {
+                    lat: 24.8607,
+                    lng: 67.0011,
+                    address: "Karachi, Pakistan"
+                }
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/api/bookings/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultContent.textContent = JSON.stringify(data, null, 2);
+                    
+                    // Scroll to results
+                    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    resultContent.textContent = '❌ Error:\n\n' + JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                resultContent.textContent = '❌ Network Error:\n\n' + error.message;
+            }
+        }
+
+        // Check health on load
+        checkHealth();
+    </script>
+</body>
+</html>
